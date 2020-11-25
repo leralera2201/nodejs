@@ -37,9 +37,3 @@ const readFiles = (oldDir, newdir) => {
 readFiles(folder18, folder20)
 readFiles(folder20, folder18)
 
-
-// fs.rmdir(additionalFolder, (err) => {
-//     if(err){
-//         console.error(err)
-//     }
-// })
