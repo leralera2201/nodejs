@@ -1,14 +1,9 @@
-let usersArr = [
-    {name: 'Ivan', email: 'lala@alala', password: '1'},
-    {name: 'Olga', email: 'la@lalala', password: '123'},
-]
-
-let isLogin = true
-
 const express = require('express');
 const exprsHbs = require('express-handlebars');
 const hbs = require('hbs')
 const path = require('path');
+const users = require('./db')
+let isLogin = true
 
 const app = express();
 
@@ -33,7 +28,7 @@ app.get('/', (req, res) => {
     if(!isLogin){
         return res.redirect('/login')
     }
-    res.render('home', {users: usersArr, isLogin});
+    res.render('home', {users, isLogin});
 })
 app.get('/login', (req, res) => {
     if(isLogin){
@@ -58,7 +53,7 @@ app.post('/logout', (req, res) => {
 
 app.post('/login', (req, res) => {
     const {email, password} = req.body;
-    const user = usersArr.find(el => el.email === email)
+    const user = users.find(el => el.email === email)
     if(!user){
         return res.render('error', {error: "You are not registered yet"})
     }
@@ -71,11 +66,11 @@ app.post('/login', (req, res) => {
 
 app.post('/register', (req, res) => {
     const {name, email, password} = req.body;
-    const user = usersArr.find(el => el.email === email)
+    const user = users.find(el => el.email === email)
     if(user){
         return res.render('error', {error: "You are registered yet"})
     }
-    usersArr.push({name, email, password});
+    users.push({name, email, password});
     isLogin = true
     res.redirect('/')
 })
