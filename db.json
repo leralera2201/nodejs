@@ -1,4 +1,4 @@
 [
-  {"name": "Ivan", "email": "lala@alala", "password": "1"},
-  {"name": "Olga", "email": "la@lalala", "password": "123"}
+  {"name": "Ivan", "email": "lala@alala", "password": "1", "id": 1},
+  {"name": "Olga", "email": "la@lalala", "password": "123", "id":  2}
 ]
