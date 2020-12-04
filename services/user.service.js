@@ -1,48 +1,40 @@
-const users = require('../db');
+const db = require('../database').getInstance();
 
 module.exports = {
-    findUsers: () => users,
-
-    insertUser: (user) => {
-        const userToCreate = users.find((el) => el.email === user.email);
-
-        if (userToCreate) {
-            throw new Error('User already exist');
-        }
-
-        users.push(user);
-        return 'User created';
+    findUsers: () => {
+        const UserModel = db.getModel('User');
+        return UserModel.findAll();
     },
 
-    findUserById: (field) => {
-        const userToGet = users.find((user) => user.name.toLowerCase() === field.toLowerCase() || user.email === field);
+    insertUser: (user) => {
+        const UserModel = db.getModel('User');
+        return UserModel.create(user);
+    },
 
-        if (!userToGet) {
-            throw new Error('User not found');
-        }
-
-        return userToGet;
+    findUserById: (id) => {
+        const UserModel = db.getModel('User');
+        const CarModel = db.getModel('Car');
+        return CarModel.findAll({
+            attributes: { exclude: ['user_id'] },
+            where: { user_id: id },
+            include: [{ model: UserModel, as: 'user' }]
+        });
     },
 
     deleteUser: (userId) => {
-        const userToDeleteIndex = users.findIndex((user) => user.id.toString() === userId);
-
-        if (userToDeleteIndex === -1) {
-            throw new Error('User not found');
-        }
-
-        users.splice(userToDeleteIndex, 1);
-        return 'User deleted';
+        const UserModel = db.getModel('User');
+        return UserModel.destroy({
+            where: {
+                id: userId
+            }
+        });
     },
 
     updateUser: (userId, user) => {
-        const userToUpdateIndex = users.findIndex((el) => el.id.toString() === userId);
-
-        if (userToUpdateIndex === -1) {
-            throw new Error('User not found');
-        }
-
-        users[userToUpdateIndex] = { ...users[userToUpdateIndex], ...user };
-        return 'User updated';
+        const UserModel = db.getModel('User');
+        return UserModel.update(
+            { ...user },
+            { returning: true, where: { id: userId } }
+        );
     }
 };

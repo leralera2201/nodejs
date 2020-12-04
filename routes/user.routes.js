@@ -5,9 +5,9 @@ const { userMiddleware } = require('../middlewares');
 const userRouter = Router();
 
 userRouter.get('/', userController.getUsers);
-userRouter.get('/:field', userController.getUserById);
-userRouter.delete('/:userId', userController.deleteUser);
-userRouter.post('/', userMiddleware.addId, userMiddleware.checkValidity, userController.createUser);
-userRouter.put('/:userId', userController.updateUser);
+userRouter.get('/:userId', userMiddleware.checkId, userController.getUserById);
+userRouter.delete('/:userId', userMiddleware.checkId, userController.deleteUser);
+userRouter.post('/', userMiddleware.checkValidity, userController.createUser);
+userRouter.put('/:userId', userMiddleware.checkId, userMiddleware.checkUpdate, userController.updateUser);
 
 module.exports = userRouter;

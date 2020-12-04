@@ -1,30 +1,35 @@
 const userService = require('../services/user.service');
 
 module.exports = {
-    createUser: (req, res) => {
+    createUser: async (req, res) => {
         try {
-            const msg = userService.insertUser(req.body);
+            const { email, password, name } = req.body;
+            const user = await userService.insertUser({ email, password, name });
 
-            res.status(201).json(msg);
+            res.status(201).json(user);
         } catch (e) {
             res.json(e.message);
         }
     },
 
-    getUserById: (req, res) => {
+    getUserById: async (req, res) => {
         try {
-            const { field } = req.params;
-            const user = userService.findUserById(field);
+            const { userId } = req.params;
+            const userCars = await userService.findUserById(userId);
 
-            res.json(user);
+            if (userCars.length === 0) {
+                throw new Error('User not found');
+            }
+
+            res.json(userCars);
         } catch (e) {
             res.status(400).json(e.message);
         }
     },
 
-    getUsers: (req, res) => {
+    getUsers: async (req, res) => {
         try {
-            const users = userService.findUsers();
+            const users = await userService.findUsers();
 
             res.json(users);
         } catch (e) {
@@ -32,24 +37,35 @@ module.exports = {
         }
     },
 
-    deleteUser: (req, res) => {
+    deleteUser: async (req, res) => {
         try {
             const { userId } = req.params;
-            const msg = userService.deleteUser(userId);
+            const user = await userService.deleteUser(userId);
+            if (!user) {
+                throw new Error('Something went wrong');
+            }
 
-            res.json(msg);
+            res.json('User deleted');
         } catch (e) {
             res.status(400).json(e.message);
         }
     },
 
-    updateUser: (req, res) => {
+    updateUser: async (req, res) => {
         try {
             const { userId } = req.params;
             const user = req.body;
-            const msg = userService.updateUser(userId, user);
+            // eslint-disable-next-line no-unused-vars
+            const [
+                _,
+                updatedUser
+            ] = await userService.updateUser(userId, user);
 
-            res.json(msg);
+            if (!updatedUser) {
+                throw new Error('Something went wrong');
+            }
+
+            res.json('User was updated');
         } catch (e) {
             res.status(400).json(e.message);
         }

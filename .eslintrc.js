@@ -51,7 +51,6 @@ module.exports = {
         'no-bitwise': 'error',
         'no-caller': 'error',
         'no-cond-assign': 'error',
-        'no-console': 'warn',
         'no-else-return': 'error',
         'no-empty': 'off',
         'no-plusplus': 'off',
